@@ -6,8 +6,60 @@ import struct
 import sys
 import re
 from time import time
+import requests
+import json
 
 
+
+#设置GNSS接收机的USB设备接口
+usb_gnss_port = '/dev/ttyUSB1' # USB serial port linux
+#设置GNSS接收机的波特率
+gnss_baud = 9600   # Same baud rate as the INERTIAL navigation module
+ser_gnss = serial.Serial(usb_gnss_port, gnss_baud)
+
+if ser_gnss.isOpen():
+    print("GPS Serial Opened! Baudrate={gnss_baud}")
+else:
+    print("GPS Serial Open Failed!")
+
+#AGNSS采用百度地图API，创建应用ogPi_AGNSS_server
+#服务端类的AK
+ak = "NAI6FQAO1z0757XVz4WPW5KZqkz140xj"	
+baiduUrl = "http://api.map.baidu.com/location/ip?ak=%s&coor=bd09ll" % (ak)
+#通过百度地图普通ip定位得到的粗略定位结果，辅助GNSS定位
+response = requests.get(baiduUrl)
+content = response.text
+print(content,"\n")
+baiduAddr = json.loads(content)
+city = baiduAddr["content"]["address_detail"]["city"]
+maplng = baiduAddr["content"]["point"]["x"]
+maplat = baiduAddr["content"]["point"]["y"]
+#print(city)
+#print(maplng)
+#print(maplat)
+
+addr = "121.41.40.95"
+port = 2621
+message = "user=pm@yahboom.com;pwd=yahboom;cmd=full;gnss=gps+bd;lat=%s;lon=%s;" % (maplat,maplng)
+socket.setdefaulttimeout(4)
+client = socket.socket()
+client.connect((addr, port))
+client.send(message.encode())
+reply_data = ""
+print("GPS Agnss start")
+if True:
+    current_reply = client.recv(1024)
+    current_reply = str(current_reply)
+    if len(current_reply) != 0:
+        reply_data += current_reply
+        # print(reply_data)
+ser.write(reply_data.encode())
+print("GPS Agnss success")
+
+
+
+
+#初始化GNSS存放数据的字符串
 utctime = ''
 lat = ''
 ulat = ''
@@ -21,26 +73,12 @@ sog = ''
 kph = ''
 gps_t = 0
 
-
-
-
-
-
-usb_gnss_port = '/dev/ttyUSB1' # USB serial port linux
-gnss_baud = 9600   # Same baud rate as the INERTIAL navigation module
-ser_gnss = serial.Serial(usb_gnss_port, gnss_baud)
-
-if ser_gnss.isOpen():
-    print("GPS Serial Opened! Baudrate={gnss_baud}")
-else:
-    print("GPS Serial Open Failed!")
-
-
-
+#初始化IMU模块报文长度
 buf_length = 11
-
+#初始化IMU模块报文数组
 RxBuff = [0]*buf_length
 
+#初始化IMU模块报文数据部分数组
 TimeData=[0.0]*8
 ACCData = [0.0]*8
 GYROData = [0.0]*8
@@ -53,13 +91,11 @@ CheckSum = 0  # Sum check bit
 start = 0 #帧头开始的标志
 data_length = 0 #根据协议的文档长度为11 eg:55 51 31 FF 53 02 CD 07 12 0A 1B
 
-
+#初始化用于存放IMU数据的字符串
 time="0"
 acc = "0"
 gyro = "0"
 Angle = "0"
-LonLat="0"
-Gps="0"
 
 def GetDataDeal(list_buf,sock):
     global time,acc,gyro,Angle,LonLat,Gps
@@ -219,6 +255,7 @@ def get_gps(datahex):
     res=f"{GpsHeight}\t{GpsYaw}\t{GpsV}\t"
     return res 
 
+
 def Convert_to_degrees(in_data1, in_data2):
     len_data1 = len(in_data1)
     str_data2 = "%05d" % int(in_data2)
@@ -302,35 +339,42 @@ def GPS_read():
                                                 #print(kph)
 
 
+#创建socket
 def create_socket():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     return sock
 
+
+#向服务端发起socket连接
+def connect_to_server(sock, ip, port):
+    servaddr = (ip, int(port))
+    sock.connect(servaddr)
+    print("连接成功。")
+
+#向服务端发起登录请求
+def login(sock, device_id):
+    login_msg = f"<bizcode>00101</bizcode><deviceid>{device_id}</deviceid>".encode()
+    tcpsend(sock, login_msg)
+
+#向服务端发送报文data
 def tcpsend(sock, data):
 
     #发送数据格式为4字节的报文长度+报文内容
 
     # 计算数据的长度，并使用struct打包为4字节的整数
     length_prefix = struct.pack('I', len(data))
-    
+
     # 将长度前缀和实际数据内容组合后发送
     sock.sendall(length_prefix + data)
 
 
-def connect_to_server(sock, ip, port):
-    servaddr = (ip, int(port))
-    sock.connect(servaddr)
-    print("连接成功。")
-
-def login(sock, device_id):
-    login_msg = f"<bizcode>00101</bizcode><deviceid>{device_id}</deviceid>".encode()
-    tcpsend(sock, login_msg)
-
+#通过socket发送GNSS数据，数据格式<bizcode>00201</bizcode><gnssdata>{data}</gnssdata>
 def send_gnssData(sock,data):
     # print(data,"\n")
     nav_data = f"<bizcode>00201</bizcode><gnssdata>{data}</gnssdata>".encode()
     tcpsend(sock, nav_data)
 
+#通过socket发送IMU数据，数据格式<bizcode>00202</bizcode><imudata>{data}</imudata>
 def send_imuData(sock,data):
     # print(data,"\n")
     nav_data = f"<bizcode>00202</bizcode><imudata>{data}</imudata>".encode()

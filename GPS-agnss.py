@@ -1,4 +1,8 @@
-# coding: utf-8
+# encoding:utf-8
+# 根据您选择的AK已为您生成调用代码
+# 检测到您当前的AK设置了IP白名单校验
+# 您的IP白名单中的IP非公网IP，请设置为公网IP，否则将请求失败
+# 请在IP地址为0.0.0.0/24 外网IP0/24 外网IP192.168.0.100/24 外网IP的计算发起请求，否则将请求失败
 import requests
 import json
 import socket
@@ -19,17 +23,39 @@ sog = ''
 kph = ''
 gps_t = 0
 
-ser = serial.Serial("/dev/ttyUSB0", 9600)
+ser = serial.Serial("/dev/ttyUSB1", 9600)
 if ser.isOpen():
     print("GPS Serial Opened! Baudrate=9600")
 else:
     print("GPS Serial Open Failed!")
 
 
-ak = "填上自己申请的ak, 请看文档 百度地图api申请教程"	
+
+# # 服务地址
+# host = "https://api.map.baidu.com"
+
+# # 接口地址
+# uri = "/location/ip"
+
+# # 此处填写你在控制台-应用管理-创建应用后获取的AK
+# ak = "NAI6FQAO1z0757XVz4WPW5KZqkz140xj"
+
+# params = {
+#     "ip":    "111.206.214.37",
+#     "coor":    "bd09ll",
+#     "ak":       ak,
+
+# }
+
+# response = requests.get(url = host + uri, params = params)
+# if response:
+#     print(response.json())
+
+ak = "NAI6FQAO1z0757XVz4WPW5KZqkz140xj"	
 baiduUrl = "http://api.map.baidu.com/location/ip?ak=%s&coor=bd09ll" % (ak)
 req = requests.get(baiduUrl)
 content = req.text
+print(content,"\n")
 baiduAddr = json.loads(content)
 city = baiduAddr["content"]["address_detail"]["city"]
 maplng = baiduAddr["content"]["point"]["x"]
@@ -50,12 +76,10 @@ print("GPS Agnss start")
 if True:
     current_reply = client.recv(1024)
     current_reply = str(current_reply)
-    # if len(current_reply) == 0:
-    #     break
-    # else:
-    #     reply_data += current_reply
-        #print(reply_data)
-ser.write(reply_data)
+    if len(current_reply) != 0:
+        reply_data += current_reply
+        # print(reply_data)
+ser.write(reply_data.encode())
 print("GPS Agnss success")
 
 
