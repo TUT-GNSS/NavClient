@@ -139,11 +139,13 @@ def GPS_read():
                                                     # lat = GGA_g[2][0]+GGA_g[2][1]+'degree'+GGA_g[2][2]+GGA_g[2][3]+'.'+GGA_g[3]+'\''
                                                     lat = "%.8f" % Convert_to_degrees(str(GGA_g[2]), str(GGA_g[3]))
                                                     ulat = GGA_g[4]
+                                                    # print("ULAT:",ulat,"\n")
                                                     # lon = GGA_g[5][0]+GGA_g[5][1]+GGA_g[5][2]+'degree'+GGA_g[5][3]+GGA_g[5][4]+'.'+GGA_g[6]+'\''
                                                     lon = "%.8f" % Convert_to_degrees(str(GGA_g[5]), str(GGA_g[6]))
                                                     ulon = GGA_g[7]
                                                     numSv = GGA_g[9]
                                                     msl = GGA_g[12]+'.'+GGA_g[13]+GGA_g[14]
+                                                    # print("GGA_g[14]",GGA_g[14])
                                                     #print(GGA_g)
                                                     gps_t = 1
                                                     return 1
@@ -171,8 +173,8 @@ try:
         if GPS_read():
             print("*********************")
             print('UTC Time:'+utctime)
-            print('Latitude:'+lat+ulat)
-            print('Longitude:'+lon+ulon)
+            print('Latitude:'+lat)
+            print('Longitude:'+lon)
             print('Number of satellites:'+numSv)
             print('Altitude:'+msl)
             print('True north heading:'+cogt+'degree')

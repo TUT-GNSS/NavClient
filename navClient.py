@@ -53,23 +53,23 @@ if True:
     if len(current_reply) != 0:
         reply_data += current_reply
         # print(reply_data)
-ser.write(reply_data.encode())
+ser_gnss.write(reply_data.encode())
 print("GPS Agnss success")
 
 
 
 #初始化GNSS存放数据的字符串
-utctime = ''
-lat = ''
-ulat = ''
-lon = ''
-ulon = ''
-numSv = ''
-msl = ''
-cogt = ''
-cogm = ''
-sog = ''
-kph = ''
+utctime = ''#UTC时间
+lat = ''        #latitude
+# ulat = ''  
+lon = ''      #longitude
+# ulon = ''
+numSv = ''#可见卫星数
+msl = ''     #海拔高度Altitude，单位米（m）
+cogt = ''   #True north heading，单位degree  得到值+'T'+'°‘
+cogm = '' #Magnetic north heading，单位degree（'°‘）
+sog = ''    #Ground speed，单位Kn
+kph = ''    #Ground speed，单位'Km/h'
 gps_t = 0
 
 #初始化IMU模块报文长度
@@ -309,12 +309,13 @@ def GPS_read():
                                                     utctime = GGA_g[0]
                                                     # lat = GGA_g[2][0]+GGA_g[2][1]+'°'+GGA_g[2][2]+GGA_g[2][3]+'.'+GGA_g[3]+'\''
                                                     lat = "%.8f" % Convert_to_degrees(str(GGA_g[2]), str(GGA_g[3]))
-                                                    ulat = GGA_g[4]
+                                                    # ulat = GGA_g[4] #lat单位
                                                     # lon = GGA_g[5][0]+GGA_g[5][1]+GGA_g[5][2]+'°'+GGA_g[5][3]+GGA_g[5][4]+'.'+GGA_g[6]+'\''
                                                     lon = "%.8f" % Convert_to_degrees(str(GGA_g[5]), str(GGA_g[6]))
-                                                    ulon = GGA_g[7]
+                                                    # ulon = GGA_g[7] #lon单位
                                                     numSv = GGA_g[9]
-                                                    msl = GGA_g[12]+'.'+GGA_g[13]+GGA_g[14]
+                                                    # msl = GGA_g[12]+'.'+GGA_g[13]+GGA_g[14]  #GGA_g[14]为单位m
+                                                    msl = GGA_g[12]+'.'+GGA_g[13]
                                                     #print(GGA_g)
                                                     gps_t = 1
                                                     return 1
@@ -326,7 +327,8 @@ def GPS_read():
                                                 if gps_t == 1:
                                                     VTG = ser_gnss.read(40)
                                                     VTG_g = re.findall(r"\w+(?=,)|(?<=,)\w+", str(VTG))
-                                                    cogt = VTG_g[0]+'.'+VTG_g[1]+'T'
+                                                    # cogt = VTG_g[0]+'.'+VTG_g[1]+'T'
+                                                    cogt = VTG_g[0]+'.'+VTG_g[1]
                                                     if VTG_g[3] == 'M':
                                                         cogm = '0.00'
                                                         sog = VTG_g[4]+'.'+VTG_g[5]
@@ -394,7 +396,7 @@ if __name__ == '__main__':
     else:
         print("IMU Serial Open Failed!")
 
-    ip="192.168.0.101"
+    ip="192.168.0.105"
     sock_port=5005
     device_id=1
 
@@ -410,21 +412,9 @@ if __name__ == '__main__':
         DueData(RXdata,sock)
         if GPS_read():
             
-            
             # gnss_data=f"{utctime}\t{lat+ulat}\t{lon+ulon}\t{numSv}\t{msl}\t{cogt+'°'}\t{cogm+'°'}\t{sog+'Kn'}\t{kph+'Km/h'}"
-            latitude = lat+ulat
-            latitude1=latitude[:-1]
-            lonitude = lon+ulon
-            lonitude1=lonitude[:-1]
-            gnss_data=f"{utctime}\t{latitude1}\t{lonitude1}"
+            #输出数据
+            gnss_data=f"{utctime}\t{lat}\t{lon}\t{msl}\t{numSv}\t{cogt}\t{cogm}\t{sog}\t{kph}"
             send_gnssData(sock,gnss_data)
-
-
-
-
-
-
-
-
 
 
