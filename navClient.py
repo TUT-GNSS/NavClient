@@ -58,7 +58,6 @@ print("GPS Agnss success")
 
 
 
-
 #初始化GNSS存放数据的字符串
 utctime = ''
 lat = ''
