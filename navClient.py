@@ -22,41 +22,6 @@ if ser_gnss.isOpen():
 else:
     print("GPS Serial Open Failed!")
 
-#AGNSS采用百度地图API，创建应用ogPi_AGNSS_server
-#服务端类的AK
-ak = "NAI6FQAO1z0757XVz4WPW5KZqkz140xj"	
-baiduUrl = "http://api.map.baidu.com/location/ip?ak=%s&coor=bd09ll" % (ak)
-#通过百度地图普通ip定位得到的粗略定位结果，辅助GNSS定位
-response = requests.get(baiduUrl)
-content = response.text
-print(content,"\n")
-baiduAddr = json.loads(content)
-city = baiduAddr["content"]["address_detail"]["city"]
-maplng = baiduAddr["content"]["point"]["x"]
-maplat = baiduAddr["content"]["point"]["y"]
-#print(city)
-#print(maplng)
-#print(maplat)
-
-addr = "121.41.40.95"
-port = 2621
-message = "user=pm@yahboom.com;pwd=yahboom;cmd=full;gnss=gps+bd;lat=%s;lon=%s;" % (maplat,maplng)
-socket.setdefaulttimeout(4)
-client = socket.socket()
-client.connect((addr, port))
-client.send(message.encode())
-reply_data = ""
-print("GPS Agnss start")
-if True:
-    current_reply = client.recv(1024)
-    current_reply = str(current_reply)
-    if len(current_reply) != 0:
-        reply_data += current_reply
-        # print(reply_data)
-ser_gnss.write(reply_data.encode())
-print("GPS Agnss success")
-
-
 
 #初始化GNSS存放数据的字符串
 utctime = ''#UTC时间
@@ -396,7 +361,7 @@ if __name__ == '__main__':
     else:
         print("IMU Serial Open Failed!")
 
-    ip="192.168.0.105"
+    ip="192.168.102.33"
     sock_port=5005
     device_id=1
 
