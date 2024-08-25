@@ -1,59 +1,41 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 // #include <serial/serial.h>
-#include "serial/serial.h"
 #include <vector>
+#include <algorithm> 
+#include "serial/serial.h"
+#include "ImuDataProcess.h"
 
 void imu()
 {
 }
 
-// struct data_package
-// {
-//     char start = 's';
-//     char unused1[2];
-//     float speed = 20;
-//     float euler[3] = {}; //(0,1,2) = (yaw,roll,pitch)
-//     char shoot_bool = 0;
-//     char RuneFlag = 0; //
-//     char unused2[10] = {};
-//     char end = 'e';
-// } __attribute__((packed));
-// static_assert(sizeof(data_package) == 32);
-
-// data_package data;
-
-int start = 0;
+bool isStart = true;
 int CheckSum = 0;
 int data_length = 0, buf_length = 11;
 std::vector<short> RxBuff(buf_length);
 
-void GetDataDeal(std::vector<short> list_buf)
+void GetDataDeal(std::vector<short>& list_buf, ImuDataProcess &imuDataProcess)
 {
     if (list_buf[buf_length - 1] != CheckSum)
     {
         return;
     }
-    if (list_buf[1] == 0x51)
-    {
-        std::cout << "加速度输出\n";
-    }
+        imuDataProcess.DataProcess(list_buf);
 }
 
-void DueData(short inputData)
+void DueData(short inputData, ImuDataProcess &imuDataProcess)
 {
-    if (inputData == 0x55 && start == 0)
+    if (inputData == 0x55 && isStart) 
     {
-        start = 1;
+        isStart = false;
         data_length = 11;
         CheckSum = 0;
-        for (auto &a : RxBuff)
-        {
-            a = 0;
-        }
+        std::fill(RxBuff.begin(), RxBuff.end(), 0);
     }
-    if (start == 1)
+    if (isStart == false)
     {
         CheckSum += inputData;
         RxBuff[buf_length - data_length] = inputData;
@@ -61,9 +43,9 @@ void DueData(short inputData)
         if (data_length == 0)
         {
             CheckSum = (CheckSum - inputData) & 0xff;
-            start = 0;
+            isStart = true;
         }
-        GetDataDeal(RxBuff);
+        GetDataDeal(RxBuff, imuDataProcess);
     }
 }
 
@@ -76,9 +58,12 @@ int main()
     ser_imu.setTimeout(to);
 
     ser_imu.open(); // 打开串口
+
+    ImuDataProcess imuDataProcess;
     while (true)
     {
         // std::cout << "number" << ser.available() << std::endl; // 读取到缓存区数据的字节数
-        DueData((short)ser_imu.read(1)[0]);
+        DueData((short)ser_imu.read(1)[0],imuDataProcess);
     }
+    return 0;
 }
