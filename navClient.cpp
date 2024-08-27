@@ -6,11 +6,9 @@
 #include <vector>
 #include <algorithm> 
 #include "serial/serial.h"
-#include "ImuDataProcess.h"
+#include "ImuBufferProcess.h"
+// #include "ImuDataProcess.h"
 
-void imu()
-{
-}
 
 bool isStart = true;
 int CheckSum = 0;
@@ -23,7 +21,7 @@ void GetDataDeal(std::vector<short>& list_buf, ImuDataProcess &imuDataProcess)
     {
         return;
     }
-        imuDataProcess.DataProcess(list_buf);
+        imuDataProcess.dataProcess(list_buf);
 }
 
 void DueData(short inputData, ImuDataProcess &imuDataProcess)
@@ -59,11 +57,13 @@ int main()
 
     ser_imu.open(); // 打开串口
 
-    ImuDataProcess imuDataProcess;
+    // ImuDataProcess imuDataProcess;
+    ImuBufferProcess ibp;
     while (true)
     {
         // std::cout << "number" << ser.available() << std::endl; // 读取到缓存区数据的字节数
-        DueData((short)ser_imu.read(1)[0],imuDataProcess);
+        // DueData((short)ser_imu.read(1)[0],imuDataProcess);
+        ibp.handleBuffer((short)ser_imu.read(1)[0]);
     }
     return 0;
 }

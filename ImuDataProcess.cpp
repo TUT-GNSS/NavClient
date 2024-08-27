@@ -48,7 +48,7 @@ void ImuDataProcess::getImuAngle(const std::vector<short> &Buffer)
     }
 }
 
-void ImuDataProcess::DataProcess(const std::vector<short> &Buffer)
+void ImuDataProcess::dataProcess(const std::vector<short> &Buffer)
 {
     std::string res; 
     switch (Buffer[1])
@@ -71,6 +71,7 @@ void ImuDataProcess::DataProcess(const std::vector<short> &Buffer)
     case ANGLE:
     {
         getImuAngle(Buffer);
+        std::cout << "输出！" << std::endl;
         break;
     }
     case READY:

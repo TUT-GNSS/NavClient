@@ -19,7 +19,7 @@ public:
     ImuDataProcess();
     ~ImuDataProcess();
     // 数据提取，根据报文类型提取数据，并发送
-    void DataProcess(const std::vector<short> &Buffer);
+    void dataProcess(const std::vector<short> &Buffer);
 
 
 private:
