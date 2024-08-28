@@ -9,16 +9,24 @@ GnssDataProcess::~GnssDataProcess()
 {
 }
 
-void GnssDataProcess::DataProcess(const std::string &in_data1)
+void GnssDataProcess::DataProcess(const std::string &inputData)
 {
-    if (m_slidingStr.size() < 2)
+    if (m_slidingStr.size() < 5)
     {
-        m_slidingStr += in_data1;
+        m_slidingStr += inputData;
     }
-    m_slidingStr[0] = m_slidingStr[1];
-    m_slidingStr[1] = in_data1[0];
-    if (m_slidingStr == "GN")
-    {
+    else{
+        //滑动字符串，后续需要优化
+        m_slidingStr.erase(0);
+        m_slidingStr+=inputData;
+    
+        if (m_slidingStr == "GNGGA")
+        {
+            handleGGA(m_getGGABufferCallback());
+        }
+        else if(m_slidingStr=="GNVTG"){
+            handleVTG(m_getVTGBufferCallback());
+        }
     }
 }
 
@@ -48,14 +56,14 @@ double GnssDataProcess::degreesConvert(const std::string &in_data1, const std::s
 
     return result;
 }
-
-void GnssDataProcess::setGGACallback(std::function<std::string()> fn)
+//设置读取GGA回调函数
+void GnssDataProcess::setGetGGABufferCallback(std::function<std::string()> fn)
 {
-    m_getGGACallback = fn;
+    m_getGGABufferCallback = fn;
 }
-void GnssDataProcess::setVTGCallback(std::function<std::string()> fn)
+void GnssDataProcess::setGetVTGBufferCallback(std::function<std::string()> fn)
 {
-    m_getVTGCallback = fn;
+    m_getVTGBufferCallback = fn;
 }
 
 void GnssDataProcess::handleGGA(const std::string &data)

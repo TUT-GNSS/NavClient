@@ -22,8 +22,8 @@ public:
     GnssDataProcess();
     ~GnssDataProcess();
     void DataProcess(const std::string &in_data1);
-    void setGGACallback(std::function<std::string()> fn);
-    void setVTGCallback(std::function<std::string()> fn);
+    void setGetGGABufferCallback(std::function<std::string()> fn);
+    void setGetVTGBufferCallback(std::function<std::string()> fn);
 
 private:
     double degreesConvert(const std::string &in_data1, const std::string &in_data2);
@@ -32,6 +32,6 @@ private:
     void handleGnssData();
     std::string m_slidingStr;
     GnssData m_gnssData;
-    std::function<std::string()> m_getGGACallback;
-    std::function<std::string()> m_getVTGCallback;
+    std::function<std::string()> m_getGGABufferCallback;
+    std::function<std::string()> m_getVTGBufferCallback;
 };

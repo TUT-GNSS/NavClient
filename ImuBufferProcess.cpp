@@ -1,9 +1,9 @@
 #include "ImuBufferProcess.h"
 
-ImuBufferProcess::ImuBufferProcess()
+ImuBufferProcess::ImuBufferProcess(serial::Serial &serial):BufferProcess(serial)
 {
     m_RxBuffer.resize(m_bufferLength);
-    m_imuDataprocess = ImuDataProcess();
+    // m_imuDataprocess = ImuDataProcess();
 }
 ImuBufferProcess::~ImuBufferProcess()
 {
@@ -16,8 +16,9 @@ void ImuBufferProcess::handleHeader()
     m_checkSum = 0;
     std::fill(m_RxBuffer.begin(), m_RxBuffer.end(), 0);
 }
-void ImuBufferProcess::handleBuffer(const short inputData)
+void ImuBufferProcess::handleBuffer()
 {
+    short inputData=(short)m_serial.read(1)[0];
     //如果输入数据位协议头
     if(inputData==0x55&&m_isStart){
         handleHeader();

@@ -1,11 +1,13 @@
 #pragma once
+#include "serial/serial.h"
 #include "ImuDataProcess.h"
+#include "BufferProcess.h"
 
-class ImuBufferProcess{
+class ImuBufferProcess:BufferProcess{
 public:
-    ImuBufferProcess();
+    ImuBufferProcess(serial::Serial &serial);
     ~ImuBufferProcess();
-    void handleBuffer(const short inputData);
+    void handleBuffer() override;
 
 private:
     //处理inputData为协议头的函数
