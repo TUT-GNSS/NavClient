@@ -2,8 +2,8 @@
 
 GnssBufferProcess::GnssBufferProcess(serial::Serial &serial):BufferProcess(serial)
 {
-    std::bind(&m_gnssDataProcess,GnssDataProcess::setGetGGABufferCallback,this,getGGABuffer);
-    std::bind(&m_gnssDataProcess,GnssDataProcess::setGetVTGBufferCallback,this,getVTGBuffer);
+    m_gnssDataProcess.setGetGGABufferCallback(std::bind(&GnssBufferProcess::getGGABuffer,this));
+    m_gnssDataProcess.setGetVTGBufferCallback(std::bind(&GnssBufferProcess::getVTGBuffer,this));
 }
 GnssBufferProcess::~GnssBufferProcess()
 {

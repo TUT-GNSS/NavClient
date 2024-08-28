@@ -5,7 +5,7 @@ class BufferProcess{
 public:
     BufferProcess(serial::Serial &serial);
     ~BufferProcess();
-    virtual void handleBuffer()=0;
+    virtual void handleBuffer();
 
 protected:
     serial::Serial &m_serial;

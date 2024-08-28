@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include "serial/serial.h"
-#include "ImuDataProcess.h"
+#include "ImuBufferProcess.h"
+#include "BufferProcess.h"
+#include "GnssBufferProcess.h"
 enum class DeciveType
 {
     IMU,
@@ -15,8 +17,13 @@ class DeviceConn{
 public:
     DeviceConn(DeciveType type,std::string port,u_int32_t baudrate,int timeout);
     ~DeviceConn();
-    void open();
+    void run();
 
-private : 
+private:
+    std::string m_port;
+    uint32_t m_baudrate;
+    DeciveType m_type;
     serial::Serial m_serial;
+    GnssBufferProcess *m_gnssBufPtr;
+    ImuBufferProcess *m_imuBufPtr;
 };

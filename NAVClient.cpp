@@ -6,8 +6,9 @@
 #include <vector>
 #include <algorithm> 
 #include "serial/serial.h"
-#include "ImuBufferProcess.h"
-// #include "ImuDataProcess.h"
+// #include "ImuBufferProcess.h"
+#include "ImuDataProcess.h"
+#include "DeviceConn.h"
 
 
 bool isStart = true;
@@ -49,21 +50,23 @@ void DueData(short inputData, ImuDataProcess &imuDataProcess)
 
 int main()
 {
-    serial::Serial ser_imu;          // 实例化一个串口的对象
-    ser_imu.setPort("/dev/ttyUSB0"); // 设置串口设备
-    ser_imu.setBaudrate(115200);     // 设置波特率
-    serial::Timeout to = serial::Timeout::simpleTimeout(1000);
-    ser_imu.setTimeout(to);
+    // serial::Serial ser_imu;          // 实例化一个串口的对象
+    // ser_imu.setPort("/dev/ttyUSB0"); // 设置串口设备
+    // ser_imu.setBaudrate(115200);     // 设置波特率
+    // serial::Timeout to = serial::Timeout::simpleTimeout(1000);
+    // ser_imu.setTimeout(to);
 
-    ser_imu.open(); // 打开串口
+    // ser_imu.open(); // 打开串口
 
     // ImuDataProcess imuDataProcess;
-    ImuBufferProcess ibp;
+    // ImuBufferProcess ibp;
+    DeviceConn dc(DeciveType::IMU,"/dev/ttyUSB0",115200,1000);
+    dc.run();
     while (true)
     {
         // std::cout << "number" << ser.available() << std::endl; // 读取到缓存区数据的字节数
         // DueData((short)ser_imu.read(1)[0],imuDataProcess);
-        ibp.handleBuffer((short)ser_imu.read(1)[0]);
+        // ibp.handleBuffer((short)ser_imu.read(1)[0]);
     }
     return 0;
 }

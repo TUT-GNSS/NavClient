@@ -3,7 +3,6 @@
 ImuBufferProcess::ImuBufferProcess(serial::Serial &serial):BufferProcess(serial)
 {
     m_RxBuffer.resize(m_bufferLength);
-    // m_imuDataprocess = ImuDataProcess();
 }
 ImuBufferProcess::~ImuBufferProcess()
 {
