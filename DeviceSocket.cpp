@@ -14,7 +14,7 @@ DeviceSocket::DeviceSocket(std::string ip,int port,std::string deviceID):m_ip(ip
 
     if (connect(m_socketfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) != 0)
     {
-        printf("connect(%s:%ld) failed.\n", m_ip, m_port);
+        printf("connect(%s:%d) failed.\n", m_ip.data(), m_port);
         close(m_socketfd);
     }
 }
@@ -38,15 +38,3 @@ ssize_t DeviceSocket::recvBuffer(void *data){
     return recv(m_socketfd, data, len, 0); // 读取报文内容。
 }
 
-void DeviceSocket::login()
-{
-    sendBuffer("<bizcode>00101</bizcode><deviceid>"+m_deviceID+"</deviceid>");
-}
-ssize_t DeviceSocket::sendGnssBuffer(const std::string &data)
-{
-    sendBuffer("<bizcode>00201</bizcode><gnssdata>"+data+"</gnssdata>");
-}
-ssize_t DeviceSocket::sendImuBuffer(const std::string &data)
-{
-    sendBuffer("<bizcode>00202</bizcode><imudata>"+data+"</imudata>");
-}

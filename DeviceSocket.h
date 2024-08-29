@@ -18,14 +18,10 @@ public:
     ~DeviceSocket();
     //接收服务端发送的报文
     ssize_t recvBuffer(void *data);
-    //客户端登录信息，向服务器发送deviceID登录报文
-    void login();
-    //Gnss报文发送
-    ssize_t sendGnssBuffer(const std::string &data);
-    //imu报文发送
-    ssize_t sendImuBuffer(const std::string &data);
+    ssize_t sendBuffer(const std::string &data); 
+    
 private:
-    ssize_t sendBuffer(const std::string &data);
+    
 
     std::string m_ip;//目的ip地址
     int m_port;//目的端口号

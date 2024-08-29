@@ -108,7 +108,7 @@ const std::string& ImuDataProcess::getReadyData()
     // std::string res;
     m_readyData.clear();
     for (int i = 0; i <m_imuData.ImuTime.size();++i){
-        m_readyData += m_imuData.ImuTime[i] + "\t";
+        m_readyData += m_imuData.ImuTime[i] + " ";
     } 
     for (int i = 0; i < m_imuData.ImuAcc.size();++i){
         m_readyData += m_imuData.ImuAcc[i] + "\t";

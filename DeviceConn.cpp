@@ -25,6 +25,7 @@ DeviceConn::~DeviceConn()
     else if(m_type==DeviceType::IMU){
         delete(m_imuBufPtr);
     }
+    m_serial.close();
 }
 const std::string& DeviceConn::run(){
     if(m_gnssBufPtr){
@@ -40,4 +41,5 @@ const std::string& DeviceConn::run(){
         }
       }
     }
+    return {};
 }
