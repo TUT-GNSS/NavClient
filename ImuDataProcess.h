@@ -11,6 +11,7 @@ struct ImuData
     std::vector<std::string> ImuAcc;// AccX,AccY,AccZ
     std::vector<std::string> ImuGyro;//Wx,Wy,Wz
     std::vector<std::string> ImuAngle;//Roll,Pitch,Yaw
+    bool isReady=false;
 };
 
 class ImuDataProcess{
@@ -20,6 +21,8 @@ public:
     ~ImuDataProcess();
     // 数据提取，根据报文类型提取数据，并发送
     void dataProcess(const std::vector<short> &Buffer);
+    bool isReady();
+    const std::string & getReadyData();
 
 
 private:
@@ -33,5 +36,6 @@ private:
     void getImuAngle(const std::vector<short> &Buffer);
 
     ImuData m_imuData;
+    std::string m_readyData;
     static const short TIME = 0x50, ACC = 0x51, GYRO = 0x52, ANGLE = 0x53, READY = 0x5F;
 };

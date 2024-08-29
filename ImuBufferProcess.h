@@ -8,6 +8,8 @@ public:
     ImuBufferProcess(serial::Serial &serial);
     ~ImuBufferProcess();
     void handleBuffer() override;
+    bool isReady();
+    const std::string &getReadyBuffer();
 
 private:
     //处理inputData为协议头的函数

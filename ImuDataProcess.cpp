@@ -50,49 +50,76 @@ void ImuDataProcess::getImuAngle(const std::vector<short> &Buffer)
 
 void ImuDataProcess::dataProcess(const std::vector<short> &Buffer)
 {
-    std::string res; 
+    // std::string res; 
     switch (Buffer[1])
     {
     case TIME:
     {
         getImuTime(Buffer);
+        m_imuData.isReady=false;
         break;
     }
     case ACC:
     {
         getImuAcc(Buffer);
+        m_imuData.isReady=false;
         break;
     }
     case GYRO:
     {
         getImuGyro(Buffer);
+        m_imuData.isReady=false;
         break;
     }
     case ANGLE:
     {
         getImuAngle(Buffer);
-        std::cout << "输出！" << std::endl;
+        m_imuData.isReady=true;
         break;
     }
     case READY:
     {
-        // 发送m_ImuData数据
-        std::string res;
-        for (int i = 0; i < 3;++i){
-            res += m_imuData.ImuAcc[i] + "\t";
-        }
-        for (int i = 0; i < 3; ++i)
-        {
-            res += m_imuData.ImuGyro[i] + "\t";
-        }
-        for (int i = 0; i < 3; ++i)
-        {
-            res += m_imuData.ImuAngle[i] + "\t";
-        }
-        std::cout << "读取" << std::endl;
+        // // 发送m_ImuData数据
+        // for (int i = 0; i < 3;++i){
+        //     res += m_imuData.ImuAcc[i] + "\t";
+        // }
+        // for (int i = 0; i < 3; ++i)
+        // {
+        //     res += m_imuData.ImuGyro[i] + "\t";
+        // }
+        // for (int i = 0; i < 3; ++i)
+        // {
+        //     res += m_imuData.ImuAngle[i] + "\t";
+        // }
         break;
     }
     default:
         break;
     }
+}
+
+bool ImuDataProcess::isReady()
+{
+    return m_imuData.isReady; 
+}
+
+const std::string& ImuDataProcess::getReadyData()
+{
+    // std::string res;
+    m_readyData.clear();
+    for (int i = 0; i <m_imuData.ImuTime.size();++i){
+        m_readyData += m_imuData.ImuTime[i] + "\t";
+    } 
+    for (int i = 0; i < m_imuData.ImuAcc.size();++i){
+        m_readyData += m_imuData.ImuAcc[i] + "\t";
+    }
+    for (int i = 0; i < m_imuData.ImuGyro.size(); ++i)
+    {
+        m_readyData += m_imuData.ImuGyro[i] + "\t";
+    }
+    for (int i = 0; i < m_imuData.ImuAngle.size(); ++i)
+    {
+        m_readyData += m_imuData.ImuAngle[i] + "\t";
+    }
+    return m_readyData;
 }

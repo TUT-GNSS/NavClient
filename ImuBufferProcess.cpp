@@ -41,3 +41,12 @@ void ImuBufferProcess::handleBuffer()
         }
     }
 }
+
+
+bool ImuBufferProcess::isReady(){
+    return m_imuDataprocess.isReady();
+}
+const std::string & ImuBufferProcess::getReadyBuffer()
+{
+    return m_imuDataprocess.getReadyData();
+}

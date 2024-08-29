@@ -1,6 +1,6 @@
 #include "DeviceConn.h"
 
-DeviceConn::DeviceConn(DeciveType type,std::string port,u_int32_t baudrate,int timeout):m_type(type),m_port(port)
+DeviceConn::DeviceConn(DeviceType type,std::string port,u_int32_t baudrate,int timeout):m_type(type),m_port(port)
                                                 ,m_baudrate(baudrate),m_gnssBufPtr(nullptr),m_imuBufPtr(nullptr)
 {
     m_serial.setPort(m_port); // 设置串口设备
@@ -10,23 +10,23 @@ DeviceConn::DeviceConn(DeciveType type,std::string port,u_int32_t baudrate,int t
 
     m_serial.open();//打开设备串口
 
-    if(m_type==DeciveType::GNSS){ 
+    if(m_type==DeviceType::GNSS){ 
        m_gnssBufPtr=new GnssBufferProcess(m_serial); 
     }
-    else if(m_type==DeciveType::IMU){
+    else if(m_type==DeviceType::IMU){
         m_imuBufPtr=new ImuBufferProcess(m_serial);
     }
 }
 DeviceConn::~DeviceConn()
 {
-    if(m_type==DeciveType::GNSS){ 
+    if(m_type==DeviceType::GNSS){ 
         delete(m_gnssBufPtr);
     }
-    else if(m_type==DeciveType::IMU){
+    else if(m_type==DeviceType::IMU){
         delete(m_imuBufPtr);
     }
 }
-void DeviceConn::run(){
+const std::string& DeviceConn::run(){
     if(m_gnssBufPtr){
       while(true){
         m_gnssBufPtr->handleBuffer();
@@ -35,6 +35,9 @@ void DeviceConn::run(){
     else if(m_imuBufPtr){
       while(true){
         m_imuBufPtr->handleBuffer();
+        if(m_imuBufPtr->isReady()){
+          return m_imuBufPtr->getReadyBuffer();
+        }
       }
     }
 }
