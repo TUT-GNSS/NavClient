@@ -27,6 +27,7 @@ DeviceConn::~DeviceConn()
     }
     m_serial.close();
 }
+
 const std::string& DeviceConn::run(){
     if(m_gnssBufPtr){
       while(true){

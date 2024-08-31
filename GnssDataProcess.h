@@ -32,7 +32,7 @@ private:
     double degreesConvert(const std::string &in_data1, const std::string &in_data2);
     void handleGGA(const std::string &data);
     void handleVTG(const std::string &data);
-    // std::string m_slidingStr;
+    std::string m_slidingStr;
     GnssData m_gnssData;
     // std::function<std::string()> m_getGGABufferCallback;
     // std::function<std::string()> m_getVTGBufferCallback;

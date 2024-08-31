@@ -82,7 +82,7 @@ int main(){
     DeviceInfo devInfo;
     // devInfo.imuSerialPort="/dev/ttyUSB0";
     // devInfo.setImuInfoIsReady();
-    devInfo.gnssSerialPort = "/dev/ttyUSB1";
+    devInfo.gnssSerialPort = "/dev/ttyUSB0";
     devInfo.setGnssInfoIsReady();
     NavClient navClient(devInfo);
     navClient.run();

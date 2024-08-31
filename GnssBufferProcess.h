@@ -11,8 +11,6 @@ class GnssBufferProcess:BufferProcess
 public:    
     GnssBufferProcess(serial::Serial &serial);
     ~GnssBufferProcess();
-    std::string getGGABuffer();
-    std::string getVTGBuffer();
     void handleBuffer() override;
     bool isReady() override;
     const std::string &getReadyBuffer() override;
