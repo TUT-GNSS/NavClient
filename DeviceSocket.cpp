@@ -19,7 +19,7 @@ DeviceSocket::DeviceSocket(std::string ip,int port,std::string deviceID):m_ip(ip
     }
 }
 DeviceSocket::~DeviceSocket(){
-
+    close(m_socketfd);
 }
 ssize_t DeviceSocket::sendBuffer(const std::string &data)
 {

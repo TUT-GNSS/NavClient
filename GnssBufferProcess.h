@@ -14,8 +14,11 @@ public:
     std::string getGGABuffer();
     std::string getVTGBuffer();
     void handleBuffer() override;
+    bool isReady() override;
+    const std::string &getReadyBuffer() override;
 
 private:
+    std::string m_buffer;
+    int m_checkSum = 0;
     GnssDataProcess m_gnssDataProcess;
-    // serial::Serial &m_serial;
 };

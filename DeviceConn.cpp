@@ -7,8 +7,8 @@ DeviceConn::DeviceConn(DeviceType type,std::string port,u_int32_t baudrate,int t
     m_serial.setBaudrate(m_baudrate);     // 设置波特率
     serial::Timeout to = serial::Timeout::simpleTimeout(timeout);
     m_serial.setTimeout(to);
-
-    m_serial.open();//打开设备串口
+    std::cout << m_port<<"   "<<m_baudrate << std::endl;
+    m_serial.open(); // 打开设备串口
 
     if(m_type==DeviceType::GNSS){ 
        m_gnssBufPtr=new GnssBufferProcess(m_serial); 
@@ -31,6 +31,9 @@ const std::string& DeviceConn::run(){
     if(m_gnssBufPtr){
       while(true){
         m_gnssBufPtr->handleBuffer();
+        if(m_gnssBufPtr->isReady()){
+          return m_gnssBufPtr->getReadyBuffer();
+        }
       }
     }
     else if(m_imuBufPtr){

@@ -42,12 +42,12 @@ struct DeviceInfo{
     std::string deviceID="0";//客户端设备ID
     //Gnss设备信息
     static const DeviceType gnssType=DeviceType::GNSS;
-    std::string gnssSerialPort;//串口地址
+    std::string gnssSerialPort = "/dev /ttyUSB1"; // 串口地址
     u_int32_t gnssBaudrate=9600;//波特率
     int gnssTimeout=1000;
     //Imu设备信息
     static const DeviceType imuType=DeviceType::IMU;
-    std::string imuSerialPort;
+    std::string imuSerialPort = "/dev/ttyUSB0";
     u_int32_t imuBaudrate=115200;
     int imuTimeout=1000;
 private:
@@ -80,8 +80,10 @@ private:
 
 int main(){
     DeviceInfo devInfo;
-    devInfo.imuSerialPort="/dev/ttyUSB0";
-    devInfo.setImuInfoIsReady();
+    // devInfo.imuSerialPort="/dev/ttyUSB0";
+    // devInfo.setImuInfoIsReady();
+    devInfo.gnssSerialPort = "/dev/ttyUSB1";
+    devInfo.setGnssInfoIsReady();
     NavClient navClient(devInfo);
     navClient.run();
     return 0;

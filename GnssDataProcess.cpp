@@ -2,32 +2,45 @@
 
 GnssDataProcess::GnssDataProcess()
 {
-    m_slidingStr = "";
+    // m_slidingStr = "";
 }
 
 GnssDataProcess::~GnssDataProcess()
 {
 }
 
-void GnssDataProcess::DataProcess(const std::string &inputData)
+void GnssDataProcess::dataProcess(const std::string &buffer)
 {
-    if (m_slidingStr.size() < 5)
-    {
-        m_slidingStr += inputData;
+    if(buffer.substr(0,5)=="GNGGA"){
+        // handleGGA(buffer.substr(6));
+        std::cout << buffer << std::endl;
     }
-    else{
-        //滑动字符串，后续需要优化
-        m_slidingStr.erase(0);
-        m_slidingStr+=inputData;
-    
-        if (m_slidingStr == "GNGGA")
-        {
-            handleGGA(m_getGGABufferCallback());
-        }
-        else if(m_slidingStr=="GNVTG"){
-            handleVTG(m_getVTGBufferCallback());
-        }
+    else if(buffer.substr(0,5)=="GNVTG"){
+        // handleGGA(buffer.substr(6));
+        std::cout << buffer << std::endl;
     }
+    // if (m_slidingStr.size() < 5)
+    // {
+    //     m_slidingStr += inputData;
+    // }
+    // else{  
+    //     //滑动字符串，后续需要优化
+    //     m_slidingStr.erase(0,1);
+    //     m_slidingStr+=inputData;
+    //     m_gnssData.isReady = false;
+
+    //     if (m_slidingStr == "GNGGA")
+    //     {
+    //         std::cout << "GGA:      " << m_getGGABufferCallback() << std::endl;
+    //         // handleGGA(m_getGGABufferCallback());
+    //         // m_gnssData.isReady = true;
+    //     }
+    //     else if(m_slidingStr=="GNVTG"){
+    //         std::cout<<"VTG:      " << m_getVTGBufferCallback() << std::endl;
+    //         // handleVTG(m_getVTGBufferCallback());
+    //         // m_gnssData.isReady = true;
+    //     }
+    // }
 }
 
 double GnssDataProcess::degreesConvert(const std::string &in_data1, const std::string &in_data2)
@@ -56,15 +69,15 @@ double GnssDataProcess::degreesConvert(const std::string &in_data1, const std::s
 
     return result;
 }
-//设置读取GGA回调函数
-void GnssDataProcess::setGetGGABufferCallback(std::function<std::string()> fn)
-{
-    m_getGGABufferCallback = fn;
-}
-void GnssDataProcess::setGetVTGBufferCallback(std::function<std::string()> fn)
-{
-    m_getVTGBufferCallback = fn;
-}
+// //设置读取GGA回调函数
+// void GnssDataProcess::setGetGGABufferCallback(std::function<std::string()> fn)
+// {
+//     m_getGGABufferCallback = fn;
+// }
+// void GnssDataProcess::setGetVTGBufferCallback(std::function<std::string()> fn)
+// {
+//     m_getVTGBufferCallback = fn;
+// }
 
 void GnssDataProcess::handleGGA(const std::string &data)
 {
@@ -106,4 +119,15 @@ void GnssDataProcess::handleVTG(const std::string &data)
         m_gnssData.cogm = tokens[3] + "." + tokens[4];
         m_gnssData.sog = tokens[6] + "." + tokens[7];
     }
+}
+
+bool GnssDataProcess::isReady()
+{
+    return m_gnssData.isReady;
+}
+const std::string &GnssDataProcess::getReadyData()
+{
+    m_readyData.clear();
+    m_readyData = m_gnssData.utcTime + "\t" + m_gnssData.latitude + "\t" + m_gnssData.lontitude + "\t" + m_gnssData.msl + "\t" + m_gnssData.numSatVisit + "\t" + m_gnssData.cogt + "\t" + m_gnssData.cogm + "\t" + m_gnssData.sog;
+    return m_readyData;
 }

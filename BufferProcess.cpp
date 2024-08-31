@@ -8,6 +8,15 @@ BufferProcess::~BufferProcess(){
 
 }
 
-void BufferProcess::handleBuffer(){
+// void BufferProcess::handleBuffer(){
 
-}
+// }
+
+// bool BufferProcess::isReady()
+// [
+
+// ]
+// const std::string &BufferProcess::getReadyBuffer()
+// {
+
+// }

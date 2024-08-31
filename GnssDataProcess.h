@@ -15,23 +15,27 @@ struct GnssData{
     std::string cogm = ""; // #Magnetic north heading，单位degree（'°‘）
     std::string sog = ""; // #Ground speed，单位Kn
     bool gps_t = false;
+    bool isReady=false;
 };
 
 class GnssDataProcess{
 public:
     GnssDataProcess();
     ~GnssDataProcess();
-    void DataProcess(const std::string &in_data1);
-    void setGetGGABufferCallback(std::function<std::string()> fn);
-    void setGetVTGBufferCallback(std::function<std::string()> fn);
+    void dataProcess(const std::string &buffer);
+    // void setGetGGABufferCallback(std::function<std::string()> fn);
+    // void setGetVTGBufferCallback(std::function<std::string()> fn);
+    bool isReady();
+    const std::string &getReadyData();
 
 private:
     double degreesConvert(const std::string &in_data1, const std::string &in_data2);
     void handleGGA(const std::string &data);
     void handleVTG(const std::string &data);
-    void handleGnssData();
-    std::string m_slidingStr;
+    // std::string m_slidingStr;
     GnssData m_gnssData;
-    std::function<std::string()> m_getGGABufferCallback;
-    std::function<std::string()> m_getVTGBufferCallback;
+    // std::function<std::string()> m_getGGABufferCallback;
+    // std::function<std::string()> m_getVTGBufferCallback;
+    std::string m_readyData;
+
 };
