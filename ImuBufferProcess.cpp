@@ -8,6 +8,7 @@ ImuBufferProcess::~ImuBufferProcess()
 {
 
 }
+
 void ImuBufferProcess::handleHeader()
 {
     m_isStart = false;
@@ -15,6 +16,8 @@ void ImuBufferProcess::handleHeader()
     m_checkSum = 0;
     std::fill(m_RxBuffer.begin(), m_RxBuffer.end(), 0);
 }
+
+
 void ImuBufferProcess::handleBuffer()
 {
     short inputData=(short)m_serial.read(1)[0];

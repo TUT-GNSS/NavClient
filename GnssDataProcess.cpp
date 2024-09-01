@@ -10,15 +10,16 @@ GnssDataProcess::~GnssDataProcess()
 
 void GnssDataProcess::dataProcess(const std::string &buffer)
 {
-    if(buffer.substr(0,5)=="GNGGA"){
-
-        std::cout << "GNGGA" << std::endl;
+    m_gnssData.isReady = false;
+    if (buffer.substr(0, 5) == "GNGGA")
+    {
+        handleGGA(buffer);
+        m_gnssData.isReady = true;
     }
-    else if(buffer.substr(0,5)=="GNVTG"){
-
-        std::cout << "GNVTG" << std::endl;
+    else if (buffer.substr(0, 5) == "GNVTG")
+    {
+        // std::cout << "GNVTG" << std::endl;
     }
-
 }
 
 double GnssDataProcess::degreesConvert(const std::string &in_data1, const std::string &in_data2)
@@ -59,12 +60,48 @@ double GnssDataProcess::degreesConvert(const std::string &in_data1, const std::s
 
 void GnssDataProcess::handleGGA(const std::string &data)
 {
+    // 以","为分割将数据存入数据队列
+    int old_idx = 0, cur_idx = data.find(',', old_idx + 1);
+    while (cur_idx != std::string::npos)
+    {
+        m_dataQue.push(data.substr(old_idx + 1, cur_idx - old_idx - 1));
+        old_idx = cur_idx;
+        cur_idx = data.find(',', old_idx + 1);
+    }
 
+    // 根据idx判断数据类型
+    int idx = 1;
+    while (!m_dataQue.empty())
+    {
+        switch (idx)
+        {
+        case 2:
+            m_gnssData.utcTime = m_dataQue.front();
+            break;
+        case 3:
+            m_gnssData.latitude = m_dataQue.front();
+            break;
+        case 5:
+            m_gnssData.lontitude = m_dataQue.front();
+            break;
+        case 8:
+            m_gnssData.numSatVisit = m_dataQue.front();
+            break;
+        case 10:
+            m_gnssData.msl = m_dataQue.front();
+            break;
+        default:
+            break;
+        }
+        // 数据出队
+        ++idx;
+        m_dataQue.pop();
+    }
 }
 
 void GnssDataProcess::handleVTG(const std::string &data)
 {
-
+    /*******待添加**********/
 }
 
 bool GnssDataProcess::isReady()
@@ -74,6 +111,6 @@ bool GnssDataProcess::isReady()
 const std::string &GnssDataProcess::getReadyData()
 {
     m_readyData.clear();
-    m_readyData = m_gnssData.utcTime + "\t" + m_gnssData.latitude + "\t" + m_gnssData.lontitude + "\t" + m_gnssData.msl + "\t" + m_gnssData.numSatVisit + "\t" + m_gnssData.cogt + "\t" + m_gnssData.cogm + "\t" + m_gnssData.sog;
+    m_readyData = m_gnssData.utcTime + "\t" + m_gnssData.latitude + "\t" + m_gnssData.lontitude + "\t" + m_gnssData.msl + "\t" + m_gnssData.numSatVisit;
     return m_readyData;
 }

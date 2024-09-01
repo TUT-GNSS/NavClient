@@ -4,6 +4,7 @@
 #include <vector>
 #include <regex>
 #include <functional>
+#include<queue>
 
 struct GnssData{
     std::string utcTime = "";     // #UTC时间
@@ -37,5 +38,6 @@ private:
     // std::function<std::string()> m_getGGABufferCallback;
     // std::function<std::string()> m_getVTGBufferCallback;
     std::string m_readyData;
-
+    
+    std::queue<std::string> m_dataQue;//定义数据列
 };

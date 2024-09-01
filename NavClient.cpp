@@ -42,6 +42,6 @@ ssize_t NavClient::sendImuBuffer(const std::string &data)
 void NavClient::run()
 {
     while(1){
-        std::cout<<m_gnssConn->run()<<"\n";
+        std::cout<<m_imuConn->run()<<"\n";
     }
 }

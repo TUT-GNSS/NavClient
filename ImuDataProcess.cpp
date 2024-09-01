@@ -8,9 +8,11 @@ ImuDataProcess::ImuDataProcess()
     m_imuData.ImuGyro.resize(3);
     m_imuData.ImuAngle.resize(3);
 }
+
 ImuDataProcess::~ImuDataProcess()
 {
 }
+
 // 提取时间数据，保存到m_imuData中
 void ImuDataProcess::getImuTime(const std::vector<short> &Buffer)
 {
@@ -20,6 +22,7 @@ void ImuDataProcess::getImuTime(const std::vector<short> &Buffer)
     }
     m_imuData.ImuTime[6] = std::to_string((Buffer[8] << 8) | Buffer[9]);
 }
+
 void ImuDataProcess::getImuAcc(const std::vector<short> &Buffer)
 {
     static const double k_acc = 16.0;
@@ -29,6 +32,7 @@ void ImuDataProcess::getImuAcc(const std::vector<short> &Buffer)
         m_imuData.ImuAcc[i] = std::to_string(accVal >= k_acc ? accVal - 2.0 * k_acc : accVal);
     }
 }
+
 void ImuDataProcess::getImuGyro(const std::vector<short> &Buffer)
 {
     static const double k_gyro = 2000.0;
@@ -38,6 +42,7 @@ void ImuDataProcess::getImuGyro(const std::vector<short> &Buffer)
         m_imuData.ImuGyro[i] = std::to_string(gyroVal >= k_gyro ? gyroVal - 2.0 * k_gyro : gyroVal);
     }
 }
+
 void ImuDataProcess::getImuAngle(const std::vector<short> &Buffer)
 {
     static const double k_angle = 180.0;
