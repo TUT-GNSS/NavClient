@@ -19,4 +19,5 @@ private:
     std::string m_buffer;
     int m_checkSum = 0;
     GnssDataProcess m_gnssDataProcess;
+    // std::function<std::string(size_t)> m_getSerialBuffer;
 };

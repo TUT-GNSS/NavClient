@@ -1,4 +1,7 @@
 #pragma once
+
+#include <stdio.h>
+#include <unistd.h>
 #include "DeviceConn.h"
 #include "DeviceSocket.h"
 #include "DeviceType.hpp"
@@ -78,13 +81,3 @@ private:
     DeviceSocket *m_deviceSocket;
 };
 
-int main(){
-    DeviceInfo devInfo;
-    devInfo.imuSerialPort = "/dev/ttyUSB0";
-    devInfo.setImuInfoIsReady();
-    // devInfo.gnssSerialPort = "/dev/ttyUSB1";
-    // devInfo.setGnssInfoIsReady();
-    NavClient navClient(devInfo);
-    navClient.run();
-    return 0;
-}

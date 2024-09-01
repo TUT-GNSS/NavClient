@@ -41,7 +41,42 @@ ssize_t NavClient::sendImuBuffer(const std::string &data)
 
 void NavClient::run()
 {
-    while(1){
-        std::cout<<m_imuConn->run()<<"\n";
+    login();
+    // 创建一个子进程给gnss
+    if (m_deviceInfo.getGnssInfoState() && m_deviceInfo.getSocketInfoState())
+    {
+        pid_t pid = fork();
+        if (pid == -1)
+        {
+            perror("fork failed!");
+            return;
+        }
+        else if (pid == 0)
+        {
+            while (true)
+            {
+                // std::cout << "GNSS Data:" << m_gnssConn->run() << "\n";
+                sendGnssBuffer(m_gnssConn->run());
+            }
+        }
+    }
+
+    //创建一个子进程给imu
+    if(m_deviceInfo.getImuInfoState()&&m_deviceInfo.getSocketInfoState()){
+        pid_t pid=fork();
+        if(pid==-1){
+            perror("fork failed!");
+            return;
+        }
+        else if(pid==0){
+            while(true){
+                // std::cout << "IMU Data:" << m_imuConn->run() << "\n";
+                sendImuBuffer(m_imuConn->run());
+            }
+        }
+    }
+    //父进程循环等待
+    while(true){
+
     }
 }
