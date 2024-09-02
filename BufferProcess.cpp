@@ -1,22 +1,19 @@
 #include "BufferProcess.h"
 
 
-BufferProcess::BufferProcess(serial::Serial &serial):m_serial(serial){
+BufferProcess::BufferProcess(){
 
 }
 BufferProcess::~BufferProcess(){
 
 }
 
-// void BufferProcess::handleBuffer(){
+std::string BufferProcess::readSerial(size_t sz)
+{
+    return m_serialReadCallback(sz);
+}
 
-// }
-
-// bool BufferProcess::isReady()
-// [
-
-// ]
-// const std::string &BufferProcess::getReadyBuffer()
-// {
-
-// }
+void BufferProcess::setReadCallback(std::function<std::string(size_t)> fn)
+{
+    m_serialReadCallback = fn;
+}

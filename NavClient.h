@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "DeviceConn.h"
+#include "DeviceSerial.h"
 #include "DeviceSocket.h"
 #include "DeviceType.hpp"
 
@@ -76,8 +76,8 @@ private:
     ssize_t sendImuBuffer(const std::string &data);
 
     DeviceInfo m_deviceInfo;
-    DeviceConn *m_gnssConn;
-    DeviceConn *m_imuConn;
+    DeviceSerial *m_gnssSerial;
+    DeviceSerial *m_imuSerial;
     DeviceSocket *m_deviceSocket;
 };
 

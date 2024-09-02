@@ -6,20 +6,20 @@ NavClient::NavClient(DeviceInfo deviceInfo):m_deviceInfo(deviceInfo)
         m_deviceSocket = new DeviceSocket(m_deviceInfo.ip, m_deviceInfo.socketPort, m_deviceInfo.deviceID);
     }
     if(m_deviceInfo.getGnssInfoState()){
-        m_gnssConn=new DeviceConn(m_deviceInfo.gnssType,m_deviceInfo.gnssSerialPort,m_deviceInfo.gnssBaudrate,m_deviceInfo.gnssTimeout);
+        m_gnssSerial=new DeviceSerial(m_deviceInfo.gnssType,m_deviceInfo.gnssSerialPort,m_deviceInfo.gnssBaudrate,m_deviceInfo.gnssTimeout);
     }
     if(m_deviceInfo.getImuInfoState()){
-        m_imuConn=new DeviceConn(m_deviceInfo.imuType,m_deviceInfo.imuSerialPort,m_deviceInfo.imuBaudrate,m_deviceInfo.imuTimeout);
+        m_imuSerial=new DeviceSerial(m_deviceInfo.imuType,m_deviceInfo.imuSerialPort,m_deviceInfo.imuBaudrate,m_deviceInfo.imuTimeout);
     }
 }
 
 NavClient::~NavClient()
 {
     if(m_deviceInfo.getGnssInfoState()){
-        delete(m_gnssConn);
+        delete(m_gnssSerial);
     }
     if(m_deviceInfo.getImuInfoState()){
-        delete(m_imuConn);
+        delete(m_imuSerial);
     }
     if(m_deviceInfo.getSocketInfoState()){
         delete(m_deviceSocket);
@@ -51,27 +51,28 @@ void NavClient::run()
             perror("fork failed!");
             return;
         }
-        else if (pid == 0)
+        else if (pid == 0)//子进程执行
         {
             while (true)
             {
-                // std::cout << "GNSS Data:" << m_gnssConn->run() << "\n";
-                sendGnssBuffer(m_gnssConn->run());
+                // std::cout << "GNSS Data:" << m_gnssSerial->run() << "\n";
+                sendGnssBuffer(m_gnssSerial->run());
             }
         }
     }
 
     //创建一个子进程给imu
-    if(m_deviceInfo.getImuInfoState()&&m_deviceInfo.getSocketInfoState()){
+    if(m_deviceInfo.getImuInfoState()&& m_deviceInfo.getSocketInfoState()){
         pid_t pid=fork();
         if(pid==-1){
             perror("fork failed!");
             return;
         }
-        else if(pid==0){
+        else if (pid == 0) // 子进程执行
+        {
             while(true){
-                // std::cout << "IMU Data:" << m_imuConn->run() << "\n";
-                sendImuBuffer(m_imuConn->run());
+                // std::cout << "IMU Data:" << m_imuSerial->run() << "\n";
+                sendImuBuffer(m_imuSerial->run());
             }
         }
     }

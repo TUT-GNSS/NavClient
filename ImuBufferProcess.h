@@ -3,9 +3,9 @@
 #include "ImuDataProcess.h"
 #include "BufferProcess.h"
 
-class ImuBufferProcess:BufferProcess{
+class ImuBufferProcess:public BufferProcess{
 public:
-    ImuBufferProcess(serial::Serial &serial);
+    ImuBufferProcess();
     ~ImuBufferProcess();
     void handleBuffer() override;
     bool isReady() override;

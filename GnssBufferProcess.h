@@ -6,18 +6,17 @@
 #include "serial/serial.h"
 #include "BufferProcess.h"
 
-class GnssBufferProcess:BufferProcess
+class GnssBufferProcess:public BufferProcess
 {
 public:    
-    GnssBufferProcess(serial::Serial &serial);
+    GnssBufferProcess();
     ~GnssBufferProcess();
-    void handleBuffer() override;
-    bool isReady() override;
-    const std::string &getReadyBuffer() override;
+    void handleBuffer() override;//Buffer处理
+    bool isReady() override;//处理的报文是否ready
+    const std::string &getReadyBuffer() override;//得到isReady的Buffer
 
 private:
     std::string m_buffer;
-    int m_checkSum = 0;
+    int m_checkSum = 0;//校验和******暂未添加
     GnssDataProcess m_gnssDataProcess;
-    // std::function<std::string(size_t)> m_getSerialBuffer;
 };

@@ -1,6 +1,6 @@
 #include "ImuBufferProcess.h"
 
-ImuBufferProcess::ImuBufferProcess(serial::Serial &serial):BufferProcess(serial)
+ImuBufferProcess::ImuBufferProcess()
 {
     m_RxBuffer.resize(m_bufferLength);
 }
@@ -21,7 +21,7 @@ void ImuBufferProcess::handleHeader()
 
 void ImuBufferProcess::handleBuffer()
 {
-    short inputData=(short)m_serial.read(1)[0];
+    short inputData=(short)readSerial(1)[0];
     //如果输入数据位协议头
     if(inputData==0x55&&m_isStart){
         handleHeader();

@@ -48,15 +48,7 @@ double GnssDataProcess::degreesConvert(const std::string &in_data1, const std::s
 
     return result;
 }
-// //设置读取GGA回调函数
-// void GnssDataProcess::setGetGGABufferCallback(std::function<std::string()> fn)
-// {
-//     m_getGGABufferCallback = fn;
-// }
-// void GnssDataProcess::setGetVTGBufferCallback(std::function<std::string()> fn)
-// {
-//     m_getVTGBufferCallback = fn;
-// }
+
 
 void GnssDataProcess::handleGGA(const std::string &data)
 {

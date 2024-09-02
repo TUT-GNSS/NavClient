@@ -1,9 +1,7 @@
 #include "GnssBufferProcess.h"
 
-GnssBufferProcess::GnssBufferProcess(serial::Serial &serial):BufferProcess(serial)
+GnssBufferProcess::GnssBufferProcess()
 {
-    // m_gnssDataProcess.setGetGGABufferCallback(std::bind(&GnssBufferProcess::getGGABuffer,this));
-    // m_gnssDataProcess.setGetVTGBufferCallback(std::bind(&GnssBufferProcess::getVTGBuffer,this));
 }
 GnssBufferProcess::~GnssBufferProcess()
 {
@@ -12,14 +10,14 @@ GnssBufferProcess::~GnssBufferProcess()
 
 void GnssBufferProcess::handleBuffer()
 {
-    if(m_serial.read(1)=="$"){
+    if (readSerial(1) == "$")
+    {
         m_buffer.clear();
         do{
-            m_buffer += m_serial.read(1);
-        } while (m_buffer.back()!='\r'||m_serial.read(1)!="\n");
+            m_buffer += readSerial(1);
+        } while (m_buffer.back() != '\r' || readSerial(1) != "\n");
         m_gnssDataProcess.dataProcess(m_buffer);
     }
-
 }
 
 bool GnssBufferProcess::isReady(){
