@@ -4,7 +4,7 @@
 #include<vector>
 
 
-
+//存放imu数据的结构体
 struct ImuData
 {
     std::vector<std::string> ImuTime; //"{yy}.{mm}.{dd} {hh}:{mn}:{ss}.{ms}"

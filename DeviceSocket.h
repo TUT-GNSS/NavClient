@@ -16,13 +16,13 @@ public:
     //创建socketfd并连接服务器
     DeviceSocket(std::string ip,int port,std::string deviceID);
     ~DeviceSocket();
-    //接收服务端发送的报文
+    //接收报文，返回接受到的data大小
     ssize_t recvBuffer(void *data);
+    //发送报文，返回发送的data大小
     ssize_t sendBuffer(const std::string &data); 
     
 private:
     
-
     std::string m_ip;//目的ip地址
     int m_port;//目的端口号
     std::string m_deviceID;//设备ID

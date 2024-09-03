@@ -54,7 +54,7 @@ struct DeviceInfo{
     u_int32_t imuBaudrate=115200;
     int imuTimeout=1000;
 private:
-    bool socketInfoIsReady=false;
+    bool socketInfoIsReady=false; //socket信息是否设置完毕
     bool gnssInfoIsReady=false;
     bool imuInfoIsReady=false;
 
@@ -75,9 +75,9 @@ private:
     //imu报文发送
     ssize_t sendImuBuffer(const std::string &data);
 
-    DeviceInfo m_deviceInfo;
-    DeviceSerial *m_gnssSerial;
-    DeviceSerial *m_imuSerial;
-    DeviceSocket *m_deviceSocket;
+    DeviceInfo m_deviceInfo;//设备信息状态机
+    DeviceSerial *m_gnssSerial;//Gnss串口处理类
+    DeviceSerial *m_imuSerial;//Imu串口处理类
+    DeviceSocket *m_deviceSocket;//设备Socket类
 };
 

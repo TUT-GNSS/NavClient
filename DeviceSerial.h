@@ -21,13 +21,10 @@ public:
 
 private:
     void bufferProcFactory(); // 创建bufferProc的工厂类
-    std::string readSerial(size_t sz);
-    std::string m_port;
-    uint32_t m_baudrate;
-    DeviceType m_type;
-    serial::Serial m_serial;
-    // GnssBufferProcess *m_gnssBufPtr;
-    // ImuBufferProcess *m_imuBufPtr;
-    BufferProcess *m_bufferProcPtr;
-    BufferProcess *m_imuBufPtr;
+    std::string readSerial(size_t sz); // 从串口读sz的数据并返回string，在BufferProcess::readSerial中回调此函数
+    std::string m_port;//设备串口地址号
+    uint32_t m_baudrate;//设备波特率
+    DeviceType m_type;//设备类型
+    serial::Serial m_serial;//设备对象
+    BufferProcess *m_bufferProcPtr;//报文处理成员的指针，根据m_type类型实例化具体对象
 };
