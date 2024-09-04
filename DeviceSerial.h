@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unistd.h>
 #include "serial/serial.h"
 #include "ImuBufferProcess.h"
 #include "BufferProcess.h"

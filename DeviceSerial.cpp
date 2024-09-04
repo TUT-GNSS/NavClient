@@ -62,5 +62,6 @@ const std::string &DeviceSerial::run()
       }
     }
   }
+  sleep(1);//休眠一秒,防止发送过快。
   return NULLSTR;
 }

@@ -5,6 +5,7 @@ DeviceSocket::DeviceSocket(std::string ip,int port,std::string deviceID):m_ip(ip
     if ((m_socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("socket() failed.\n");
+        exit(-1);
     }
     struct sockaddr_in servaddr;
     memset(&servaddr, 0, sizeof(servaddr));
@@ -16,6 +17,7 @@ DeviceSocket::DeviceSocket(std::string ip,int port,std::string deviceID):m_ip(ip
     {
         printf("connect(%s:%d) failed.\n", m_ip.data(), m_port);
         close(m_socketfd);
+        exit(-1);
     }
 }
 DeviceSocket::~DeviceSocket(){

@@ -1,8 +1,8 @@
 #include "ImuBufferProcess.h"
 
-ImuBufferProcess::ImuBufferProcess()
+ImuBufferProcess::ImuBufferProcess():m_RxBuffer(m_bufferLength)
 {
-    m_RxBuffer.resize(m_bufferLength);
+    
 }
 
 ImuBufferProcess::~ImuBufferProcess()
