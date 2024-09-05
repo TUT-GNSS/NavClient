@@ -81,3 +81,45 @@ void NavClient::run()
 
     }
 }
+
+void NavClient::testSerial()
+{
+    if (m_deviceInfo.getGnssInfoState())
+    {
+        pid_t pid = fork();
+        if (pid == -1)
+        {
+            perror("fork failed!");
+            return;
+        }
+        else if (pid == 0) // 子进程执行
+        {
+            while (true)
+            {
+                std::cout << "GNSS Data:" << m_gnssSerial->run() << "\n";
+            }
+        }
+    }
+
+    // 创建一个子进程给imu
+    if (m_deviceInfo.getImuInfoState())
+    {
+        pid_t pid = fork();
+        if (pid == -1)
+        {
+            perror("fork failed!");
+            return;
+        }
+        else if (pid == 0) // 子进程执行
+        {
+            while (true)
+            {
+                std::cout << "IMU Data:" << m_imuSerial->run() << "\n";
+            }
+        }
+    }
+    // 父进程循环等待
+    while (true)
+    {
+    }
+}

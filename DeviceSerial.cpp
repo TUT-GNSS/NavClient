@@ -7,8 +7,12 @@ DeviceSerial::DeviceSerial(DeviceType type, std::string port, u_int32_t baudrate
   serial::Timeout to = serial::Timeout::simpleTimeout(timeout);
   m_serial.setTimeout(to);
 
-  std::cout << m_port << "   " << m_baudrate << std::endl;
   m_serial.open(); // 打开设备串口
+  //设备连接成功打印设备信息
+  if(m_serial.isOpen()){
+    m_type == DeviceType::GNSS ? std::cout << "GNSS设备已连接" : std::cout << "IMU设备已连接";
+    std::cout << "   设备地址:" << m_port << "   波特率:" << m_baudrate << std::endl;
+  }
 
   bufferProcFactory();
   if (m_bufferProcPtr)

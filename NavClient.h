@@ -65,11 +65,13 @@ public:
     NavClient(DeviceInfo deviceInfo);
     ~NavClient();
     //客户端登录信息，向服务器发送deviceID登录报文
-    void login();
-    void run();
 
+    void run();//运行客户端程序
+    void testSerial();//测试串口数据,打印串口数据信息
 
 private:
+    //向服务端发送登录请求
+    void login();
     //Gnss报文发送
     ssize_t sendGnssBuffer(const std::string &data);
     //imu报文发送
